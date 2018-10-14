@@ -1,4 +1,5 @@
 require('dotenv').config();
+const inquirer = require('inquirer');
 const mysql = require('mysql');
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -31,5 +32,47 @@ db.query('SELECT * FROM `products`', function (err, result, fields) {
                 emptyString + row.price);
 
         });
+        inquirer.prompt([
+            {
+                name: 'id',
+                message: 'Input the ID of the item you would like to purchase.'
+            },
+            {
+                name: 'qty',
+                message: 'How many would you like?'
+            }
+        ]).then(res => {
+            if(isNaN(res.id) || isNaN(res.qty)){
+                console.log('Invalid ID or Quantity.');
+                return;
+            }
+
+            if (result[(res.id - 1)].stock_quantity < res.qty) {
+                console.log('Insufficient supply');
+                return;
+            }
+            
+            let sum = result[(res.id - 1)].price * res.qty;
+
+            let query = 'UPDATE products SET stock_quantity = '  + (result[(res.id - 1)].stock_quantity - res.qty) + ' WHERE item_id = ' + (res.id - 1);
+
+            // console.log('QUERY STRING: ' + query);
+
+            db.query(query, (err, result, fields) => {
+                if(err){
+                    console.log(err);
+     
+
+                    console.log('SUCCESS');
+                    db.end(err => {
+                        if (err) console.log(err);
+                    });
+                }
+            })
+
+        })
+
     }
 })
+
+
