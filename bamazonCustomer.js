@@ -42,32 +42,34 @@ db.query('SELECT * FROM `products`', function (err, result, fields) {
                 message: 'How many would you like?'
             }
         ]).then(res => {
-            if(isNaN(res.id) || isNaN(res.qty)){
+            if (isNaN(res.id) || isNaN(res.qty)) {
                 console.log('Invalid ID or Quantity.');
+                db.end();
                 return;
             }
 
             if (result[(res.id - 1)].stock_quantity < res.qty) {
                 console.log('Insufficient supply');
+                db.end();
                 return;
             }
-            
+
             let sum = result[(res.id - 1)].price * res.qty;
 
-            let query = 'UPDATE products SET stock_quantity = '  + (result[(res.id - 1)].stock_quantity - res.qty) + ' WHERE item_id = ' + (res.id - 1);
+            let query = 'UPDATE products SET stock_quantity = ' + (result[(res.id - 1)].stock_quantity - res.qty) + ' WHERE item_id = ' + res.id;
 
             // console.log('QUERY STRING: ' + query);
 
             db.query(query, (err, result, fields) => {
-                if(err){
+                if (err) {
                     console.log(err);
-     
-
-                    console.log('SUCCESS');
-                    db.end(err => {
-                        if (err) console.log(err);
-                    });
                 }
+
+                console.log('Order total: $' + sum.toFixed(2));
+
+                db.end(err => {
+                    if (err) console.log(err);
+                });
             })
 
         })
