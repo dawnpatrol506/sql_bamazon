@@ -5,4 +5,4 @@ Use command "node bamazonCustomer.js" to get started.
 
 follow the prompts to make a purchase.
 
-see this photo as an example of the working app: 
+see this photo as an example of the working app: https://github.com/dawnpatrol506/sql_bamazon/blob/master/bamazonCustomer.PNG
