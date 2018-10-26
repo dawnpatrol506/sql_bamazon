@@ -41,10 +41,10 @@ inquirer.prompt([{
             break;
         case 'Add Inventory':
             queries.viewProductsForSale(db)
-            addInventory(db, queries.addInventory);
+            addInventory(db, queries.addToInventory);
             break;
         case 'Add New Product':
             let product = addNewProduct()
             queries.addNewProduct(db, product);
     }
-})
+});
